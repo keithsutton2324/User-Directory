@@ -2,6 +2,8 @@ import React from "react";
 import axios from "axios";
 import EmployeeRecord from "./EmployeeRecords";
 import Search from "./Search";
+import Sort from "./Sort";
+import Reset from "./Reset";
 
 class Employees extends React.Component {
     state = {
@@ -48,16 +50,54 @@ class Employees extends React.Component {
             employeeRecords: searchEmployees
         })
     }
+
+    handleSortEmployees = (searchString) => {
+        console.log(searchString)
+        var sortEmployees = []
+        let employeesList = this.state.masterEmployeeRecords
+
+        // sort and push employees by sort parameter, male or female
+        for (let i = 0; i < employeesList.length; i++) {
+            if (employeesList[i].gender.toUpperCase() ==
+                searchString.toUpperCase()) {
+                sortEmployees.push(employeesList[i])
+            }
+        }
+
+        // push remaining employees
+        var otherGender = ""
+        if (searchString.toUpperCase() == "MALE") {
+            otherGender = "FEMALE"
+        }
+        else if (searchString.toUpperCase() == "FEMALE") {
+                otherGender = "MALE"
+        }
+        else {
+            return
+        }
+        for (let i = 0; i < employeesList.length; i++) {
+            if (employeesList[i].gender.toUpperCase() == otherGender) {
+                sortEmployees.push(employeesList[i])
+            }
+        }
+        this.setState({
+            employeeRecords: sortEmployees
+        })
+    }
     render() {
         return (<div>
             <h1>Employee Directory</h1>
             <Search
                 handleSearch={this.handleSearchEmployee} />
+            <Sort
+                handleSort={this.handleSortEmployees} />
+            <Reset
+                handleReset={this.componentDidMount} />
             <table>
                 <thead>
                     <tr>
-                        <th>Firstname</th>
-                        <th>Lastname</th>
+                        <th>FirstName</th>
+                        <th>LastName</th>
                         <th>Gender</th>
                         <th>Email</th>
                         <th>Picture</th>
